@@ -1,0 +1,35 @@
+{
+  "name": "file-uploader",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/susancantdance/file-uploader#readme",
+  "bugs": {
+    "url": "https://github.com/susancantdance/file-uploader/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/susancantdance/file-uploader.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@quixo3/prisma-session-store": "^3.1.13",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "express-validator": "^7.2.1",
+    "multer": "^1.4.5-lts.1",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.4.0"
+  }
+}

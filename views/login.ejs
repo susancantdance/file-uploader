@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Log in to upload files</title>
+    <style>
+      form {
+        width: 350px;
+        padding: 30px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+
+        align-items: center;
+      }
+      label {
+        grid-column: 1/2;
+        text-align: right;
+      }
+      input {
+        margin-left: 5px;
+        grid-column: 2/3;
+      }
+      button {
+        align-self: center;
+        grid-column: 2 / 3;
+        margin-left: 5px;
+        width: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Log In</h1>
+    <form action="/login/password" method="POST">
+      <label for="email">Email: </label
+      ><input id="email" type="email" name="username" required /><br />
+      <label for="pw">Password: </label>
+      <input type="password" name="password" id="pw" required /><br />
+      <label for="but"></label><button type="submit" id="but">Submit</button>
+    </form>
+  </body>
+</html>
