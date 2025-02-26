@@ -1,6 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
-const { check } = require("prisma");
+// const { check } = require("prisma");
 
 const prisma = new PrismaClient();
 
@@ -39,27 +39,27 @@ async function addRootFolder() {
   const folder = await prisma.folder.create({
     data: {
       name: "home",
-      path: [],
     },
   });
+
   return folder;
 }
 
-async function filesPost(filename, folderid, size, path) {
+async function filesPost(filename, folderid, size, cloudPath) {
   console.log("filespost func");
   await prisma.files.create({
     data: {
       filename: filename,
-      folderId: folderid,
+      folderId: Number(folderid),
       size: size,
-      path: path,
+      cloudPath: cloudPath,
     },
   });
 }
 
-async function getFolderId(foldername) {
-  console.log("getfolderId");
-  const folder = await prisma.folder.findUnique({
+async function getFolder(foldername) {
+  console.log("getfolder");
+  const folder = await prisma.folder.findFirst({
     where: {
       name: foldername,
     },
@@ -70,6 +70,25 @@ async function getFolderId(foldername) {
     },
   });
   return folder;
+}
+
+async function getFolderById(folderId) {
+  const folder = await prisma.folder.findUnique({
+    where: {
+      id: folderId,
+    },
+    include: {
+      children: true,
+      files: true,
+      parent: true,
+    },
+  });
+  return folder;
+}
+
+async function getAllFolders() {
+  const folders = await prisma.folder.findMany();
+  return folders;
 }
 
 async function folderPost(currfolder_id, newfolder_name) {
@@ -84,17 +103,23 @@ async function folderPost(currfolder_id, newfolder_name) {
   });
 
   let newpath = currfolder.path.slice();
-  newpath.push(currfolder.name);
+  newpath.push(currfolder_id);
 
   console.log("newpath");
   console.log(newpath);
-  await prisma.folder.create({
-    data: {
-      parentId: currfolder_id,
-      name: newfolder_name,
-      path: newpath,
-    },
-  });
+
+  try {
+    await prisma.folder.create({
+      data: {
+        parentId: currfolder_id,
+        name: newfolder_name,
+        path: newpath,
+      },
+    });
+  } catch (error) {
+    console.log("ERROR!");
+    console.log(error);
+  }
   //   await prisma.folder.update({
   //     where: {
   //         id: currfolder_id,
@@ -105,42 +130,31 @@ async function folderPost(currfolder_id, newfolder_name) {
   //   })
 }
 
-async function deleteFolder(foldername) {
+async function deleteFolder(folderid) {
   await prisma.folder.delete({
     where: {
-      name: foldername,
+      id: Number(folderid),
     },
   });
 }
 
-async function getFiles(folder) {
-  const folder_obj = await prisma.folder.findUnique({
-    where: {
-      name: folder,
-    },
-    select: {
-      files: true,
-    },
-  });
+// async function getFiles(folder) {
+//   const folder_obj = await prisma.folder.findUnique({
+//     where: {
+//       name: folder,
+//     },
+//     select: {
+//       files: true,
+//     },
+//   });
 
-  return folder_obj.files;
-}
+//   return folder_obj.files;
+// }
 
-async function renameFolder(oldname, newname) {
-  let folderObj = await prisma.folder.findUnique({
-    where: {
-      name: oldname,
-    },
-    select: {
-      path: true,
-      id: true,
-      children: true,
-    },
-  });
-
+async function renameFolder(folderid, oldname, newname) {
   await prisma.folder.update({
     where: {
-      name: oldname,
+      id: folderid,
     },
     data: {
       name: newname,
@@ -148,32 +162,32 @@ async function renameFolder(oldname, newname) {
   });
 
   //are there children? If YES:
-  if (folderObj.children.length > 0) {
-    console.log("there are children");
+  // if (folderObj.children.length > 0) {
+  //   console.log("there are children");
 
-    let id = folderObj.id;
-    const getPath = await prisma.folder.findFirst({
-      where: {
-        parentId: id,
-      },
-      select: {
-        path: true,
-      },
-    });
+  //   let id = folderObj.id;
+  //   const getPath = await prisma.folder.findFirst({
+  //     where: {
+  //       parentId: id,
+  //     },
+  //     select: {
+  //       path: true,
+  //     },
+  //   });
 
-    let newpath = getPath.path.slice();
-    let index = newpath.indexOf(oldname);
-    newpath[index] = newname;
+  //   let newpath = getPath.path.slice();
+  //   let index = newpath.indexOf(oldname);
+  //   newpath[index] = newname;
 
-    await prisma.folder.updateMany({
-      where: {
-        parentId: id,
-      },
-      data: {
-        path: newpath,
-      },
-    });
-  }
+  //   await prisma.folder.updateMany({
+  //     where: {
+  //       parentId: id,
+  //     },
+  //     data: {
+  //       path: newpath,
+  //     },
+  //   });
+  // }
 }
 
 async function getFileDetail(fileId) {
@@ -205,11 +219,13 @@ module.exports = {
   postSignup,
   filesPost,
   addRootFolder,
-  getFolderId,
+  getFolder,
   folderPost,
-  getFiles,
+  // getFiles,
   deleteFolder,
   renameFolder,
   getFileDetail,
+  getFolderById,
+  getAllFolders,
   //   getSubFolders,
 };

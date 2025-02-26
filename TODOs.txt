@@ -1,0 +1,20 @@
+Make UI more sensible w/r/t folder and file creation
+Update UI for signup/login and link pages together
+Icons for folders/files?
+Add error handling for 
+
+    * duplicate file name
+
+    * general server errors
+
+
+
+DONE:
+
+Cascade renaming down to children folders
+    * if you rename 2nd level folder, 4th+ level folders still have old path
+Errors:
+        * query strings w/ invalid folder name
+            * having unique constraint vs. allowing same names (allow same names)
+                * duplicate folder name
+    * renaming to existing name

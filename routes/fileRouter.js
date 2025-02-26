@@ -4,16 +4,18 @@ const fileRouter = Router();
 const controller = require("../controllers/fileController");
 const multer = require("multer");
 var path = require("path");
+// const handleUpload = require("./helper").handleUpload;
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./public/data/uploads");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
-const upload = multer({ storage: storage });
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "https://api.cloudinary.com/v1_1/dnhptebmt/auto/upload");
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.originalname);
+//   },
+// });
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage, preservePath: true });
 
 fileRouter.get("/", controller.filesGet);
 

@@ -35,15 +35,15 @@
   </head>
   <body>
     <h1>
-      <% if(path.length == 0) { %>
       <a href="/files">home</a>
-      <% } else { path.map((pth) => { %>
-      <a href="/files?folder=<%=pth%>"><%=pth%> &gt;</a>
-      <%}) %>&nbsp;<%= folder%> <%} %>
+      <% if (path.length > 0) { %> <% path.map((pth) => { %> <% if(pth.name
+      !='home') { %>
+      <a href="/files?folder=<%=pth.id%>"><%=pth.name%> </a> <%} %> &gt; <%}) %>
+      &nbsp;<%= folder.name%> <% } %>
     </h1>
     <% if(user) { %> Upload a file, <%= user.username %>! Or
     <a href="/logout">logout</a> instead <br /><br />
-    <% if(folder != 'home') { %>
+    <% if(folder.name != 'home') { %>
     <div class="buttons">
       <button type="button" id="toggle" onclick="toggleSomething()">
         Rename this folder
@@ -51,7 +51,7 @@
 
       <form action="/files/deletefolder" method="post">
         <button type="submit">Delete this folder</button>
-        <input type="hidden" name="foldername" value="<%=folder%>" />
+        <input type="hidden" name="folderid" value="<%= folder.id %>" />
         <input type="hidden" name="path" value="<%=path%>" />
       </form>
     </div>
@@ -61,7 +61,8 @@
         <label for="newname"
           >Rename to: <input type="text" name="newname" id="newname"
         /></label>
-        <input type="hidden" name="oldname" value="<%= folder %>" />
+        <input type="hidden" name="oldname" value="<%= folder.name %>" />
+        <input type="hidden" name="folderid" value="<%= folder.id %>" />
         <button type="submit">Rename</button>
       </form>
     </div>
@@ -85,7 +86,7 @@
       <ul>
         <% subfolders.map((fldr) => { %>
         <li>
-          <a href="/files?folder=<%=fldr.name%>"><%= fldr.name %></a>
+          <a href="/files?folder=<%=fldr.id%>"><%= fldr.name %></a>
         </li>
         <% }) %>
       </ul>
@@ -100,7 +101,7 @@
               class="form-control-file"
               name="uploaded_file" /></label
           ><br />
-          <input type="hidden" name="currentfolder" value="<%= folder %>" />
+          <input type="hidden" name="currentfolder" value="<%= folder.id %>" />
           <input type="submit" value="Upload!" class="btn btn-default" />
         </div>
       </form>
@@ -113,7 +114,7 @@
         /></label>
         <button type="submit">Add Folder</button>
 
-        <input type="hidden" name="currentfolder" value="<%= folder %>" />
+        <input type="hidden" name="currentfolder" value="<%= folder.id %>" />
       </form>
     </div>
     <% } else { %> Hey! You have to <a href="/login">login</a> first! <% } %>

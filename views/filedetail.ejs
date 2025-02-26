@@ -10,9 +10,10 @@
     <ul>
       <li>Size: <%=file.size %></li>
       <li>Date Uploaded: <%=file.uploadtime%></li>
+      <li>Path: <%= file.cloudPath %></li>
     </ul>
     <form action="/files/download" method="POST">
-      <input type="hidden" name="filepath" value="<%= file.path %>" />
+      <input type="hidden" name="filepath" value="<%= file.cloudPath %>" />
       <button type="submit">Download me!</button>
     </form>
   </body>
